@@ -1,5 +1,0 @@
-{
-  "presets": ["@babel/preset-env"],
-  "plugins": ["@babel/plugin-proposal-private-property-in-object"],
-  "ignore": ["node_modules"]
-}
