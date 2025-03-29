@@ -1,10 +1,21 @@
-FROM node:lts-alpine
-ENV NODE_ENV=production
-WORKDIR /usr/src/app
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
-RUN npm install --production --silent && mv node_modules ../
+# Use an official Node.js runtime as base image
+FROM node:20
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy package.json and yarn.lock first (for caching dependencies)
+COPY package.json yarn.lock ./
+
+# Enable corepack and install dependencies
+RUN corepack enable && corepack prepare yarn@stable --activate
+RUN yarn install --frozen-lockfile
+
+# Copy the rest of your project files
 COPY . .
-EXPOSE 3000
-RUN chown -R node /usr/src/app
-USER node
-CMD ["npm", "start"]
+
+# Expose the port (change 3000 to your backend port)
+EXPOSE 5000
+
+# Start the backend server
+CMD ["yarn", "start"]

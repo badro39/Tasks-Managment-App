@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "this project is a practice for express js and mongoose",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
     "build": "yarn babel . --out-dir dist --ignore 'node_modules'",
