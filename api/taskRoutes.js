@@ -22,7 +22,7 @@ const checkError = (req, res, next) => {
 // get All Tasks
 router
   .route("/")
-  .get(async (req, res) => {
+  .get(authMiddleware, async (req, res) => {
     const tasks = await Task.find();
     if (!tasks.length) return res.send("No Tasks Found!");
 
