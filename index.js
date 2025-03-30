@@ -1,30 +1,40 @@
 // express
-import express from "express"
+import express from "express";
 
 // dotenv
 import { config } from "dotenv";
 
 // middlewares
-import errorMiddleware from "./middleware/error.js"
+import errorMiddleware from "./middleware/error.js";
 
 // db
-import connectDB from "./config/db.js"
+import connectDB from "./config/db.js";
 // routes
-import UserRoutes from "./api/userRoutes.js"
-import TaskRoutes from "./api/taskRoutes.js"
+import TaskRoutes from "./api/taskRoutes.js";
+import UserRoutes from "./api/userRoutes.js";
 
-config()
-connectDB()
+// CORS
+import cors from "cors"
 
-const app = express()
-app.use(express.json())
+config();
+connectDB();
 
+const app = express();
+app.use(express.json());
 
-app.use("/account", UserRoutes)
-app.use("/tasks", TaskRoutes)
+app.use(
+  cors({
+    origin: process.env.URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
-app.use(errorMiddleware)
-const PORT = process.env.PORT || 8000
-app.listen(PORT, ()=>{
-    console.log(`server is running on port: ${PORT}`)
-})
+app.use("/account", UserRoutes);
+app.use("/tasks", TaskRoutes);
+
+app.use(errorMiddleware);
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`server is running on port: ${PORT}`);
+});
