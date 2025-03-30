@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "build": "yarn babel . --out-dir dist --ignore 'node_modules'",
+    "build": "npx babel . --out-dir dist --ignore 'node_modules'",
     "start": "node dist/index.js"
   },
   "author": "Djaballah Badr",
@@ -30,8 +30,5 @@
   "resolutions": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "node-base64": "2.0.0"
-  },
-  "engines": {
-    "node": "18.x"
   }
 }
