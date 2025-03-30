@@ -29,10 +29,9 @@
   },
   "resolutions": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "node-base64": "0.0.1"
+    "node-base64": "2.0.0"
   },
   "engines": {
-    "node": "18.x",
-    "yarn": "1.x"
+    "node": "18.x"
   }
 }
