@@ -3,8 +3,6 @@ import express from "express";
 
 // express validator
 import { check, validationResult } from "express-validator";
-// middleware
-import authMiddleware from "../middleware/auth.js";
 
 // task model
 import Task from "../models/tasks.js";
@@ -22,45 +20,61 @@ const checkError = (req, res, next) => {
 // get All Tasks
 router
   .route("/")
-  .get(authMiddleware, async (req, res) => {
-    const tasks = await Task.find();
-    if (!tasks.length) return res.send("No Tasks Found!");
+  .get(async (req, res, next) => {
+    try {
+      const tasks = await Task.find();
+      if (!tasks.length)
+        return res.status(404).json({ message: "No Tasks Found!" });
 
-    res.json(tasks);
+      return res.status(200).json(tasks);
+    } catch (err) {
+      next(err);
+    }
   })
   .post(
-    authMiddleware,
     [check("title", "Title is required").notEmpty().trim()],
     checkError,
-    async (req, res) => {
-      const { title, description, dueDate } = req.body;
-      const task = await Task.create({
-        title,
-        description,
-        dueDate,
-        user: req.user.id,
-      });
-      res.status(201).json(task);
+    async (req, res, next) => {
+      const { title, description, dueDate } = req.sanitizedBody;
+      try {
+        await Task.create({
+          title,
+          description,
+          dueDate,
+          user: req.user.id,
+        });
+        return res.status(201).json({ success: true });
+      } catch (err) {
+        next(err);
+      }
     }
   );
 
 // modify a task
 router
   .route("/:id")
-  .put(authMiddleware, async (req, res) => {
-    const task = await Task.findById(req.params.id); // Get a single document
-    if (!task) return res.status(404).json({ error: "Task Not Found!" });
+  .put(async (req, res, next) => {
+    try {
+      const task = await Task.findById(req.params.id); // Get a single document
+      if (!task) return res.status(404).json({ error: "Task Not Found!" });
 
-    task.completed = true;
-    await task.save(); // Save the updated task
+      task.completed = true;
+      await task.save(); // Save the updated task
 
-    res.json({ message: "Task updated successfully!" }); // Send response
+      return res.status(201).json({ message: "Task updated successfully!" }); // Send response
+    } catch (err) {
+      next(err);
+    }
   })
-  .delete(authMiddleware, async (req, res) => {
-    const deletedTask = await Task.deleteOne({ _id: req.params.id });
-    if (!deletedTask.deletedCount)
-      return res.status(401).json({ error: "Task Did not deleted!" });
-    res.json({ message: "Task Deleted!" });
+  .delete(async (req, res, next) => {
+    try {
+      const deletedTask = await Task.deleteOne({ _id: req.params.id });
+      if (!deletedTask.deletedCount)
+        return res.status(404).json({ error: "Task Did not deleted!" });
+      res.json({ message: "Task Deleted!" });
+    } catch (err) {
+      next(err);
+    }
   });
 
 export default router;

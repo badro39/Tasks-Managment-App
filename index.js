@@ -6,6 +6,8 @@ import { config } from "dotenv";
 
 // middlewares
 import errorMiddleware from "./middleware/error.js";
+import authMiddleware from "./middleware/auth.js";
+import sanitizeMiddleware from './middleware/sanitize.js';
 
 // db
 import connectDB from "./config/db.js";
@@ -30,8 +32,10 @@ app.use(
   })
 );
 
+app.use(sanitizeMiddleware)
+
 app.use("/account", UserRoutes);
-app.use("/tasks", TaskRoutes);
+app.use("/tasks", authMiddleware,TaskRoutes);
 
 app.use(errorMiddleware);
 const PORT = process.env.PORT || 8000;
