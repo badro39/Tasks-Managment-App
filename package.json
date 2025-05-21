@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "this project is a practice for express js and mongoose",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
+    "prebuild": "rimraf dist",
     "build": "npx babel . --out-dir dist --ignore 'node_modules'",
     "start": "node dist/index.js",
     "test": "jest",
