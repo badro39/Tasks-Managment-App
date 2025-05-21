@@ -17,7 +17,6 @@ import UserRoutes from "./api/userRoutes.js";
 
 // Security
 import cors from "cors"
-import csurf from "csurf"
 import helmet from "helmet"
 import rateLimit from "express-rate-limit";
 
@@ -25,7 +24,6 @@ config();
 connectDB();
 
 const app = express();
-const csrfProtection = csurf({ cookie: true });
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
@@ -42,15 +40,6 @@ app.use(
     credentials: true,
   })
 );
-
-// CSURF
-app.use((req, res, next) => {
-  if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
-    csrfProtection(req, res, next);
-  } else {
-    next();
-  }
-});
 
 // helmet
 app.use(helmet())
